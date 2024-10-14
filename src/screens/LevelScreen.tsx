@@ -3,6 +3,8 @@ import { View, Text, ImageBackground, StyleSheet } from 'react-native';
 import Card from '../components/Card';
 import ShowModal from '../components/ShowModal'; 
 import { saveData, getData, removeData } from '../utils/storageUtils';
+import Header from '../components/Header';
+
 
 const LevelScreen = ({ route }) => {
   const { backgroundImage, levelImages, levelNumber } = route.params;
@@ -39,7 +41,7 @@ const LevelScreen = ({ route }) => {
       const savedState = await getData(STORAGE_KEY);
       if (savedState) {
         const { lives, cards } = savedState;
-        setLives(lives);
+        setLives(lives > 0 ? lives : 3);
         setCards(cards);
       }
     } catch (error) {
@@ -48,6 +50,7 @@ const LevelScreen = ({ route }) => {
       setIsLoaded(true);
     }
   };
+  
 
   useEffect(() => {
     loadGameState();
@@ -124,7 +127,29 @@ const LevelScreen = ({ route }) => {
     saveGameState();
   };
 
+  const onBackPress = () => {
+    console.log('Back button pressed');
+    navigation.goBack();
+  };
+
+  const updateCorrectGuesses = (levelNumber) => {
+    const level = levels.find(level => level.levelNumber === levelNumber);
+    if (level) {
+      level.correctGuesses += 1; // Увеличиваем количество угаданных карточек на 1
+    }
+  };
+
+
   return (
+    <>
+     <Header
+        showBackButton={true}
+        showInfoButton={false}
+        lives={lives}
+        // totalCards={currentLevel.levelImages.length} // Общее количество карточек на текущем уровне
+        // guessedCards={currentLevel.correctGuesses}   // Количество угаданных карточек
+        onBackPress={onBackPress}
+      />
     <ImageBackground source={backgroundImage} style={styles.background}>
       <View style={styles.container}>
         <Text style={styles.title}>Level {levelNumber}</Text>
@@ -159,6 +184,8 @@ const LevelScreen = ({ route }) => {
         buttonText="Start again"
       />
     </ImageBackground>
+    </>
+    
   );
 };
 
