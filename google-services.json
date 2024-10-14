@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "720728665587",
+    "project_id": "mymind-d53b8",
+    "storage_bucket": "mymind-d53b8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:720728665587:android:e1702428f0c88245e53686",
+        "android_client_info": {
+          "package_name": "com.mymind.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMa4xJVq9Mi4iG8EhDG3viXjTNZbzT_RY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
