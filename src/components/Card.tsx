@@ -13,7 +13,7 @@ const Card: React.FC<CardProps> = ({ onPress, flipped, image }) => {
       {flipped ? (
         <Image source={image} style={styles.image} />
       ) : (
-        <Image source={require('../../assets/images//default.png')} style={styles.image} /> 
+        <Image source={require('../../assets/images/default.png')} style={styles.image} /> 
       )}
     </TouchableOpacity>
   );

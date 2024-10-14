@@ -5,6 +5,7 @@ import HomeScreen from './src/screens/HomeScreen';
 import GeoCheckScreen from './src/screens/GeoCheckScreen';
 import SelectLevelScreen from './src/screens/SelectLevelScreen';
 import LevelScreen from './src/screens/LevelScreen';
+import RulesScreen from './src/screens/RulesScreen';
 import { initializeApp } from 'firebase/app';
 import OneSignal from 'react-native-onesignal';
 
@@ -41,10 +42,25 @@ const App = () => {
            />
           <Stack.Screen
           name="SelectLevelScreen"
-          component={SelectLevelScreen} />
+          component={SelectLevelScreen} 
+          options={{
+            headerShown: false,
+          }}
+          />
           <Stack.Screen
           name="LevelScreen"
-          component={LevelScreen} />
+          component={LevelScreen} 
+          options={{
+            headerShown: false,
+          }}
+          />
+          <Stack.Screen
+          name="RulesScreen"
+          component={RulesScreen} 
+          options={{
+            headerShown: false,
+          }}
+          />
       </Stack.Navigator>
     </NavigationContainer>
   );

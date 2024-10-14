@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, FlatList, ImageBackground } from 'react-native';
 import { levels } from '../helpers/levels';
 import { loadImages } from '../helpers/loadImages';
+import Header from '../components/Header';
+import backgroundImage from '../../assets/images/background/bg.jpg';
 
 const SelectLevelScreen = ({ navigation }: { navigation: any }) => {
   const handlePress = (level: any) => {
@@ -24,8 +26,26 @@ const SelectLevelScreen = ({ navigation }: { navigation: any }) => {
     </TouchableOpacity>
   );
 
+  const onBackPress = () => {
+    console.log('Back button pressed');
+    navigation.goBack();
+  };
+
+  const onInfoPress = () => {
+    console.log('Info button pressed');
+    navigation.navigate('RulesScreen')
+  };
+
   return (
-    <View style={styles.container}>
+    <>
+    <Header 
+      showBackButton={false} 
+      showInfoButton={true}
+      onInfoPress={onInfoPress}
+      showLogo={true}
+    />
+    <ImageBackground source={backgroundImage} style={styles.background}>
+       <View style={styles.container}>
       <FlatList
         data={levels} 
         renderItem={renderItem}
@@ -33,6 +53,9 @@ const SelectLevelScreen = ({ navigation }: { navigation: any }) => {
         numColumns={2} 
       />
     </View>
+    </ImageBackground>
+    </>
+   
   );
 };
 
@@ -42,6 +65,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+  },
+  background: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   button: {
     width: '45%', 
