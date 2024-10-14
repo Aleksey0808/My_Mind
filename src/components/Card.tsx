@@ -21,9 +21,9 @@ const Card: React.FC<CardProps> = ({ onPress, flipped, image }) => {
 
 const styles = StyleSheet.create({
   card: {
-    width: 80,
-    height: 80,
-    margin: 10,
+    width: '45%', 
+    aspectRatio: 1, 
+    margin: '1%', 
   },
   image: {
     width: '100%',

@@ -47,33 +47,33 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       },
       logoContainer: {
-        position: 'absolute', // Позволяет наложить логотип на фон
-        top: '30%', // Положение логотипа по вертикали
-        alignItems: 'center', // Центрирование логотипа
+        position: 'absolute', 
+        top: '30%', 
+        alignItems: 'center', 
       },
       logo: {
-        width: 250, // Ширина логотипа
-        height: 250, // Высота логотипа
+        width: 250, 
+        height: 250, 
       },
       buttonContainer: {
-        marginBottom: 50, // Отступ от нижней части экрана
+        marginBottom: 50,
       },
       gradientBorder: {
         borderWidth: 2,
-        borderRadius: 50, // Овальная форма
-        padding: 5, // Отступ для создания эффекта градиентной рамки
+        borderRadius: 50, 
+        padding: 5, 
         marginBottom: 60,
       },
       button: {
-        backgroundColor: '#6EBCF7', // Однотонный цвет фона кнопки
-        borderRadius: 50, // Овальная форма
+        backgroundColor: '#6EBCF7',
+        borderRadius: 50, 
         paddingVertical: 15,
         paddingHorizontal: 50,
       },
       buttonText: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: 'white', // Цвет текста
-        textAlign: 'center', // Центрирование текста
+        color: 'white', 
+        textAlign: 'center', 
       },
     });

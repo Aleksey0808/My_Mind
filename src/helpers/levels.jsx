@@ -7,7 +7,7 @@ export const levels = [
       require('../../assets/images/lev1/2.png'),
       require('../../assets/images/lev1/3.png'),
     ],
-    correctGuesses: 0, // Количество угаданных карточек на уровне 1
+    correctGuesses: 0, 
   },
   {
     levelNumber: 2,
@@ -17,7 +17,7 @@ export const levels = [
       require('../../assets/images/lev2/2.png'),
       require('../../assets/images/lev2/3.png'),
     ],
-    correctGuesses: 0, // Количество угаданных карточек на уровне 2
+    correctGuesses: 0, 
   },
   {
     levelNumber: 3,
@@ -27,7 +27,7 @@ export const levels = [
       require('../../assets/images/lev3/2.png'),
       require('../../assets/images/lev3/3.png'),
     ],
-    correctGuesses: 0, // Количество угаданных карточек на уровне 3
+    correctGuesses: 0, 
   },
   {
     levelNumber: 4,
@@ -40,7 +40,7 @@ export const levels = [
       require('../../assets/images/lev4/5.png'),
       require('../../assets/images/lev4/6.png'),
     ],
-    correctGuesses: 0, // Количество угаданных карточек на уровне 4
+    correctGuesses: 0,
   },
   {
     levelNumber: 5,
@@ -49,6 +49,6 @@ export const levels = [
       require('../../assets/images/lev5/1.png'),
       require('../../assets/images/lev5/2.png'),
     ],
-    correctGuesses: 0, // Количество угаданных карточек на уровне 5
+    correctGuesses: 0, 
   },
 ];

@@ -25,39 +25,35 @@ const Header = ({
           <TouchableOpacity 
             onPress={onBackPress} 
             style={styles.backButton}
-            hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }} // Увеличение области нажатия
+            hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }} 
           >
             <Image source={require('../../assets/images/back.png')} style={styles.image} />
           </TouchableOpacity>
         )}
 
-        {/* Центральная часть с жизнями и угаданными карточками */}
-        {showBackButton && (lives !== undefined && totalCards !== undefined && guessedCards !== undefined) && (
-          <View style={styles.centerContainer}>
-            {/* Если передан флаг showLogo, отображаем логотип */}
-            {showLogo ? 
-              <View style={styles.logoContainer}>
-                <Image
-                  source={require('../../assets/images/miniLogo.png')} // Проверь путь!
-                  style={styles.logo} // Измененный стиль для логотипа
-                />
-              </View> :
+        <View style={styles.centerContainer}>
+          {showLogo ? (
+            <View style={styles.logoContainer}>
+              <Image
+                source={require('../../assets/images/miniLogo.png')} 
+                style={styles.logo}
+              />
+            </View>
+          ) : (
+            <>
               <View style={styles.livesContainer}>
                 <Image source={require('../../assets/images/heart.png')} style={styles.image} />
                 <Text style={styles.livesText}>{lives}</Text>
               </View>
-            }
+              <View style={styles.guessedContainer}>
+                <Text style={styles.guessedText}>{guessedCards}/{totalCards}</Text>
+              </View>
+            </>
+          )}
+        </View>
 
-            {/* Овальный фон для угаданных карточек */}
-            <View style={styles.guessedContainer}>
-              <Text style={styles.guessedText}>{guessedCards}/{totalCards}</Text>
-            </View>
-          </View>
-        )}
-
-        {/* Кнопка "Инфо" */}
         {showInfoButton && (
-          <TouchableOpacity onPress={onInfoPress} style={[styles.infoButton, !showBackButton && styles.infoButtonNoBack]}>
+          <TouchableOpacity onPress={onInfoPress} style={styles.infoButton}>
             <Image source={require('../../assets/images/info.png')} style={styles.image} />
           </TouchableOpacity>
         )}
@@ -82,13 +78,6 @@ const styles = StyleSheet.create({
   },
   backButton: {
     padding: 10,
-  },
-  infoButton: {
-    padding: 10,
-  },
-  infoButtonNoBack: {
-    position: 'absolute',
-    right: 20,
   },
   centerContainer: {
     flexDirection: 'row',
@@ -127,8 +116,11 @@ const styles = StyleSheet.create({
     height: 30,
   },
   logo: {
-    width: 50, // Увеличен размер логотипа
+    width: 50,
     height: 50,
+  },
+  infoButton: {
+    padding: 10,
   },
 });
 
