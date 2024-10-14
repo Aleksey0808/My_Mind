@@ -5,8 +5,7 @@ import ShowModal from '../components/ShowModal';
 import { saveData, getData, removeData } from '../utils/storageUtils';
 import Header from '../components/Header';
 
-
-const LevelScreen = ({ route }) => {
+const LevelScreen = ({ route, navigation }) => {
   const { backgroundImage, levelImages, levelNumber } = route.params;
   const STORAGE_KEY = `level_${levelNumber}`;
 
@@ -20,7 +19,7 @@ const LevelScreen = ({ route }) => {
   };
 
   const [cards, setCards] = useState(generateCards(levelImages));
-  const [selectedCards, setSelectedCards] = useState<number[]>([]);
+  const [selectedCards, setSelectedCards] = useState([]);
   const [lives, setLives] = useState(3);
   const [gameOver, setGameOver] = useState(false);
   const [gameWon, setGameWon] = useState(false);
@@ -51,7 +50,6 @@ const LevelScreen = ({ route }) => {
     }
   };
   
-
   useEffect(() => {
     loadGameState();
   }, []);
@@ -104,7 +102,7 @@ const LevelScreen = ({ route }) => {
     }
   }, [selectedCards, cards]);
 
-  const handleCardPress = (index: number) => {
+  const handleCardPress = (index) => {
     if (selectedCards.length < 2 && !cards[index].flipped && !showCards) {
       setSelectedCards((prev) => [...prev, index]);
     }
@@ -132,64 +130,58 @@ const LevelScreen = ({ route }) => {
     navigation.goBack();
   };
 
-  const updateCorrectGuesses = (levelNumber) => {
-    const level = levels.find(level => level.levelNumber === levelNumber);
-    if (level) {
-      level.correctGuesses += 1; // Увеличиваем количество угаданных карточек на 1
-    }
-  };
-
-
+  const guessedCards = cards.filter(card => card.flipped).length / 2; 
+  const totalCards = cards.length / 2; 
   return (
     <>
-     <Header
+      <Header
         showBackButton={true}
         showInfoButton={false}
         lives={lives}
-        // totalCards={currentLevel.levelImages.length} // Общее количество карточек на текущем уровне
-        // guessedCards={currentLevel.correctGuesses}   // Количество угаданных карточек
+        totalCards={totalCards} 
+        guessedCards={guessedCards} 
         onBackPress={onBackPress}
-      />
-    <ImageBackground source={backgroundImage} style={styles.background}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Level {levelNumber}</Text>
-        <Text style={styles.lives}>Lives: {lives}</Text>
-        {isLoaded ? (
-          <View style={styles.cardContainer}>
-            {cards.map((card) => (
-              <Card
-                key={card.id}
-                onPress={() => handleCardPress(card.id)}
-                flipped={card.flipped || selectedCards.includes(card.id) || showCards}
-                image={card.image}
-              />
-            ))}
-          </View>
-        ) : (
-          <Text>Loading...</Text>
-        )}
-      </View>
-
-      <ShowModal
-        visible={gameOver}
-        message="Game over!"
-        onClose={handleRestart}
-        buttonText="Start again"
+        showLogo={false} 
       />
 
-      <ShowModal
-        visible={gameWon}
-        message="Congratulations! You won!"
-        onClose={handleRestart}
-        buttonText="Start again"
-      />
-    </ImageBackground>
+      <ImageBackground source={backgroundImage} style={styles.background}>
+        <View style={styles.container}>
+          {isLoaded ? (
+            <View style={styles.cardContainer}>
+              {cards.map((card) => (
+                <Card
+                  key={card.id}
+                  onPress={() => handleCardPress(card.id)}
+                  flipped={card.flipped || selectedCards.includes(card.id) || showCards}
+                  image={card.image}
+                />
+              ))}
+            </View>
+          ) : (
+            <Text>Loading...</Text>
+          )}
+        </View>
+
+        <ShowModal
+          visible={gameOver}
+          message="Game over!"
+          onClose={handleRestart}
+          buttonText="Start again"
+        />
+
+        <ShowModal
+          visible={gameWon}
+          message="Congratulations! You won!"
+          onClose={handleRestart}
+          buttonText="Start again"
+        />
+      </ImageBackground>
     </>
-    
   );
 };
 
 export default LevelScreen;
+
 
 const styles = StyleSheet.create({
   background: {
@@ -216,5 +208,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
+    maxWidth: '80%', 
   },
 });

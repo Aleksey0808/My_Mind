@@ -38,12 +38,13 @@ const SelectLevelScreen = ({ navigation }: { navigation: any }) => {
 
   return (
     <>
-    <Header 
+   <Header 
       showBackButton={false} 
       showInfoButton={true}
       onInfoPress={onInfoPress}
       showLogo={true}
     />
+
     <ImageBackground source={backgroundImage} style={styles.background}>
        <View style={styles.container}>
       <FlatList

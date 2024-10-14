@@ -11,7 +11,11 @@ const RulesScreen = ({ navigation }: { navigation: any }) => {
 
   return (
     <>
-    <Header showBackButton={true} onBackPress={onBackPress} />
+     <Header 
+        showBackButton={true} 
+        onBackPress={onBackPress} 
+        showLogo={true} 
+      />
      <ImageBackground source={backgroundImage} style={styles.background}>
       <View style={styles.container}>
         <Text style={styles.title}>Rules</Text>
