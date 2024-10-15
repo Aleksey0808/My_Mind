@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ImageBackground, StyleSheet } from 'react-native';
+import { View, Text, ImageBackground, StyleSheet, FlatList, Dimensions } from 'react-native';
 import Card from '../components/Card';
 import ShowModal from '../components/ShowModal'; 
 import { saveData, getData, removeData } from '../utils/storageUtils';
@@ -12,7 +12,7 @@ const LevelScreen = ({ route, navigation }) => {
   const generateCards = (images) => {
     const pairs = [...images, ...images].sort(() => Math.random() - 0.5);
     return pairs.map((image, index) => ({
-      id: index,
+      id: index.toString(), 
       image,
       flipped: false,
     }));
@@ -49,7 +49,7 @@ const LevelScreen = ({ route, navigation }) => {
       setIsLoaded(true);
     }
   };
-  
+
   useEffect(() => {
     loadGameState();
   }, []);
@@ -126,41 +126,50 @@ const LevelScreen = ({ route, navigation }) => {
   };
 
   const onBackPress = () => {
-    console.log('Back button pressed');
     navigation.goBack();
   };
 
   const home = () => {
-    navigation.navigate('Home')
+    navigation.navigate('Home');
   };
 
-  const guessedCards = cards.filter(card => card.flipped).length / 2; 
-  const totalCards = cards.length / 2; 
+  const guessedCards = cards.filter(card => card.flipped).length / 2;
+  const totalCards = cards.length / 2;
+
+  const numColumns = cards.length > 6 ? 3 : 2;
+
+  const renderCard = ({ item }) => (
+    <Card
+      onPress={() => handleCardPress(item.id)}
+      flipped={item.flipped || selectedCards.includes(item.id) || showCards}
+      image={item.image}  
+    />
+  );
+
   return (
     <>
       <Header
         showBackButton={true}
         showInfoButton={false}
         lives={lives}
-        totalCards={totalCards} 
-        guessedCards={guessedCards} 
+        totalCards={totalCards}
+        guessedCards={guessedCards}
         onBackPress={onBackPress}
-        showLogo={false} 
+        showLogo={false}
       />
 
       <ImageBackground source={backgroundImage} style={styles.background}>
         <View style={styles.container}>
           {isLoaded ? (
-            <View style={styles.cardContainer}>
-              {cards.map((card) => (
-                <Card
-                  key={card.id}
-                  onPress={() => handleCardPress(card.id)}
-                  flipped={card.flipped || selectedCards.includes(card.id) || showCards}
-                  image={card.image}
-                />
-              ))}
-            </View>
+            <FlatList
+              data={cards}
+              renderItem={renderCard}
+              keyExtractor={(item) => item.id}
+              numColumns={numColumns} 
+              contentContainerStyle={styles.cardContainer}
+              columnWrapperStyle={styles.columnWrapper} 
+              showsVerticalScrollIndicator={false} 
+            />
           ) : (
             <Text>Loading...</Text>
           )}
@@ -180,15 +189,15 @@ const LevelScreen = ({ route, navigation }) => {
           message="Congratulations! You won!"
           onClose={handleRestart}
           buttonText="Start again"
-          
+          onBackPress={onBackPress}
+          home={home}
         />
       </ImageBackground>
     </>
   );
 };
 
-export default LevelScreen;
-
+const cardSize = Dimensions.get('window').width / 3 - 20; 
 
 const styles = StyleSheet.create({
   background: {
@@ -201,20 +210,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  title: {
-    fontSize: 24,
-    color: 'white',
-    marginBottom: 20,
-  },
-  lives: {
-    fontSize: 20,
-    color: 'white',
-    marginBottom: 10,
-  },
   cardContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
     justifyContent: 'center',
-    maxWidth: '80%', 
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  columnWrapper: {
+    justifyContent: 'space-between', 
+  },
+  card: {
+    width: cardSize,
+    height: cardSize,
+    margin: 10,
   },
 });
+
+export default LevelScreen;

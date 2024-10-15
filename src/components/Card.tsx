@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Image, StyleSheet, View } from 'react-native';
+import { TouchableOpacity, Image, StyleSheet, View, Dimensions } from 'react-native';
 
 interface CardProps {
   onPress: () => void;
@@ -21,13 +21,15 @@ const Card: React.FC<CardProps> = ({ onPress, flipped, image }) => {
   );
 };
 
+const screenWidth = Dimensions.get('window').width;
+
+const cardSize = screenWidth / 3 - 20; 
+
 const styles = StyleSheet.create({
   card: {
-    width: '30%', 
-    aspectRatio: 1, 
-    margin: '2%', 
-    maxWidth: 120, 
-    maxHeight: 120,
+    width: cardSize, 
+    height: cardSize, 
+    margin: 10,
     borderWidth: 4,
     borderColor: '#6EBCF7',  
     borderRadius: 10,  
