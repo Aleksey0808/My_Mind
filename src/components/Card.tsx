@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { TouchableOpacity, Image, StyleSheet, View } from 'react-native';
 
 interface CardProps {
   onPress: () => void;
@@ -11,9 +11,11 @@ const Card: React.FC<CardProps> = ({ onPress, flipped, image }) => {
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
       {flipped ? (
-        <Image source={image} style={styles.image} />
+        <View style={styles.defaultBackground}>
+          <Image source={image} style={styles.image} resizeMode="contain" /> 
+        </View>
       ) : (
-        <Image source={require('../../assets/images/default.png')} style={styles.image} /> 
+        <Image source={require('../../assets/images/default.png')} style={styles.image} resizeMode="contain" />
       )}
     </TouchableOpacity>
   );
@@ -21,14 +23,27 @@ const Card: React.FC<CardProps> = ({ onPress, flipped, image }) => {
 
 const styles = StyleSheet.create({
   card: {
-    width: '45%', 
+    width: '30%', 
     aspectRatio: 1, 
-    margin: '1%', 
+    margin: '2%', 
+    maxWidth: 120, 
+    maxHeight: 120,
+    borderWidth: 4,
+    borderColor: '#6EBCF7',  
+    borderRadius: 10,  
   },
   image: {
     width: '100%',
     height: '100%',
     borderRadius: 10,
+  },
+  defaultBackground: {
+    backgroundColor: '#2E2B42',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10, 
   },
 });
 

@@ -51,4 +51,39 @@ export const levels = [
     ],
     correctGuesses: 0, 
   },
+  {
+    levelNumber: 6,
+    backgroundImage: require('../../assets/images/lev6/bg.jpg'),
+    levelImages: [
+      require('../../assets/images/lev6/1.png'),
+      require('../../assets/images/lev6/2.png'),
+      require('../../assets/images/lev6/3.png'),
+      require('../../assets/images/lev6/4.png'),
+    ],
+    correctGuesses: 0,
+  },
+  {
+    levelNumber: 7,
+    backgroundImage: require('../../assets/images/lev7/bg.jpg'),
+    levelImages: [
+      require('../../assets/images/lev7/1.png'),
+      require('../../assets/images/lev7/2.png'),
+      require('../../assets/images/lev7/3.png'),
+      require('../../assets/images/lev7/4.png'),
+      require('../../assets/images/lev7/5.png'),
+      require('../../assets/images/lev7/6.png'),
+    ],
+    correctGuesses: 0,
+  },
+  {
+    levelNumber: 8,
+    backgroundImage: require('../../assets/images/lev8/bg.jpg'),
+    levelImages: [
+      require('../../assets/images/lev8/1.png'),
+      require('../../assets/images/lev8/2.png'),
+      require('../../assets/images/lev8/3.png'),
+      require('../../assets/images/lev8/4.png'),
+    ],
+    correctGuesses: 0,
+  },
 ];

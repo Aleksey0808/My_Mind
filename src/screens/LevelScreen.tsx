@@ -130,6 +130,10 @@ const LevelScreen = ({ route, navigation }) => {
     navigation.goBack();
   };
 
+  const home = () => {
+    navigation.navigate('Home')
+  };
+
   const guessedCards = cards.filter(card => card.flipped).length / 2; 
   const totalCards = cards.length / 2; 
   return (
@@ -167,6 +171,8 @@ const LevelScreen = ({ route, navigation }) => {
           message="Game over!"
           onClose={handleRestart}
           buttonText="Start again"
+          onBackPress={onBackPress}
+          home={home}
         />
 
         <ShowModal
@@ -174,6 +180,7 @@ const LevelScreen = ({ route, navigation }) => {
           message="Congratulations! You won!"
           onClose={handleRestart}
           buttonText="Start again"
+          
         />
       </ImageBackground>
     </>
