@@ -7,7 +7,6 @@ export const getUserGeo = async (): Promise<{ latitude: number; longitude: numbe
   }
 
   const { coords } = await Location.getCurrentPositionAsync({});
-  console.log('coords', coords);
   return { latitude: coords.latitude, longitude: coords.longitude };
 };
 
