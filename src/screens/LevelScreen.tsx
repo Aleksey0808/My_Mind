@@ -15,6 +15,7 @@ const LevelScreen = ({ route, navigation }) => {
       id: index.toString(),
       image,
       flipped: false,
+      matched: false,
     }));
   };
 
@@ -25,6 +26,13 @@ const LevelScreen = ({ route, navigation }) => {
   const [gameWon, setGameWon] = useState(false);
   const [showCards, setShowCards] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
+
+
+  useEffect(() => {
+    if (isLoaded) {
+      saveGameState();
+    }
+  }, [lives, cards]);
 
   const saveGameState = async () => {
     try {
@@ -51,74 +59,82 @@ const LevelScreen = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    loadGameState();
+    loadGameState(); 
   }, []);
 
+ 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setCards((prevCards) =>
-        prevCards.map((card) => ({ ...card, flipped: false }))
-      );
-      setShowCards(false);
-    }, 3000);
+    if (isLoaded) {
+      const timer = setTimeout(() => {
+        setCards((prevCards) =>
+          prevCards.map((card) =>
+            card.matched ? card : { ...card, flipped: false } 
+          )
+        );
+        setShowCards(false);
+      }, 3000);
 
-    return () => clearTimeout(timer);
-  }, []); 
+      return () => clearTimeout(timer);
+    }
+  }, [isLoaded]);
 
+  
   useEffect(() => {
     if (selectedCards.length === 2) {
       const [firstIndex, secondIndex] = selectedCards;
+      const isMatch = cards[firstIndex].image === cards[secondIndex].image;
 
-      if (cards[firstIndex].image === cards[secondIndex].image) {
+      if (isMatch) {
         setCards((prevCards) =>
           prevCards.map((card, index) =>
-            index === firstIndex || index === secondIndex ? { ...card, flipped: true } : card
+            index === firstIndex || index === secondIndex
+              ? { ...card, flipped: true, matched: true } 
+              : card
           )
         );
+        setSelectedCards([]);
 
-        if (cards.every(card => card.flipped || card.id === firstIndex.toString() || card.id === secondIndex.toString())) {
-          setGameWon(true);
+        if (cards.every(card => card.matched || card.id === firstIndex.toString() || card.id === secondIndex.toString())) {
+          setGameWon(true); 
         }
       } else {
         setLives((prevLives) => {
           const newLives = Math.max(prevLives - 1, 0);
           if (newLives === 0) {
-            setGameOver(true);
+            setGameOver(true); 
           }
           return newLives;
         });
 
         const timer = setTimeout(() => {
-          setCards(prevCards => prevCards.map((card, index) => {
-            if (index === firstIndex || index === secondIndex) {
-              return { ...card, flipped: false };
-            }
-            return card;
-          }));
+          setCards((prevCards) =>
+            prevCards.map((card, index) =>
+              index === firstIndex || index === secondIndex
+                ? { ...card, flipped: false } 
+                : card
+            )
+          );
           setSelectedCards([]); 
         }, 1000);
 
         return () => clearTimeout(timer);
       }
-      
-      setSelectedCards([]);
     }
   }, [selectedCards, cards]);
 
   const handleCardPress = (index) => {
     if (selectedCards.length < 2 && !cards[index].flipped && !showCards) {
-
       setCards((prevCards) => {
         const newCards = [...prevCards];
-        newCards[index].flipped = true;
+        newCards[index].flipped = true; 
         return newCards;
       });
-      setSelectedCards((prev) => [...prev, index]);
+      setSelectedCards((prev) => [...prev, index]); 
     }
   };
 
   const handleRestart = async () => {
-    const newCards = generateCards(levelImages);
+    const newCards = generateCards(levelImages); 
     setCards(newCards);
     setLives(3);
     setGameOver(false);
@@ -133,9 +149,7 @@ const LevelScreen = ({ route, navigation }) => {
       setShowCards(false);
     }, 3000);
 
-    await removeData(STORAGE_KEY);
-    saveGameState();
-
+    await removeData(STORAGE_KEY); 
     return () => clearTimeout(timer);
   };
 
@@ -147,10 +161,10 @@ const LevelScreen = ({ route, navigation }) => {
     navigation.navigate('Home');
   };
 
-  const guessedCards = cards.filter(card => card.flipped).length / 2;
+  const guessedCards = cards.filter(card => card.matched).length / 2; 
   const totalCards = cards.length / 2;
 
-  const numColumns = cards.length > 6 ? 3 : 2;
+  const numColumns = cards.length > 6 ? 3 : 2; 
 
   const renderCard = ({ item }) => {
     return (
@@ -161,7 +175,7 @@ const LevelScreen = ({ route, navigation }) => {
       />
     );
   };
-  
+
   return (
     <>
       <Header
