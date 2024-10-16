@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ImageBackground, StyleSheet, FlatList, Dimensions } from 'react-native';
 import Card from '../components/Card';
-import ShowModal from '../components/ShowModal'; 
+import ShowModal from '../components/ShowModal';
 import { saveData, getData, removeData } from '../utils/storageUtils';
 import Header from '../components/Header';
 
@@ -12,7 +12,7 @@ const LevelScreen = ({ route, navigation }) => {
   const generateCards = (images) => {
     const pairs = [...images, ...images].sort(() => Math.random() - 0.5);
     return pairs.map((image, index) => ({
-      id: index.toString(), 
+      id: index.toString(),
       image,
       flipped: false,
     }));
@@ -55,34 +55,29 @@ const LevelScreen = ({ route, navigation }) => {
   }, []);
 
   useEffect(() => {
-    if (showCards) {
-      const timer = setTimeout(() => {
-        setCards((prevCards) =>
-          prevCards.map((card) => ({
-            ...card,
-            flipped: false,
-          }))
-        );
-        setShowCards(false);
-      }, 3000);
+    const timer = setTimeout(() => {
+      setCards((prevCards) =>
+        prevCards.map((card) => ({ ...card, flipped: false }))
+      );
+      setShowCards(false);
+    }, 3000);
 
-      return () => clearTimeout(timer);
-    }
-  }, [showCards]);
+    return () => clearTimeout(timer);
+  }, []); 
 
   useEffect(() => {
     if (selectedCards.length === 2) {
-      const [first, second] = selectedCards;
+      const [firstIndex, secondIndex] = selectedCards;
 
-      if (cards[first].image === cards[second].image) {
+      if (cards[firstIndex].image === cards[secondIndex].image) {
         setCards((prevCards) =>
           prevCards.map((card, index) =>
-            index === first || index === second ? { ...card, flipped: true } : card
+            index === firstIndex || index === secondIndex ? { ...card, flipped: true } : card
           )
         );
 
-        if (cards.every(card => card.flipped || card.id === first || card.id === second)) {
-          setGameWon(true); 
+        if (cards.every(card => card.flipped || card.id === firstIndex.toString() || card.id === secondIndex.toString())) {
+          setGameWon(true);
         }
       } else {
         setLives((prevLives) => {
@@ -93,17 +88,31 @@ const LevelScreen = ({ route, navigation }) => {
           return newLives;
         });
 
-        setTimeout(() => {
-          setSelectedCards([]);
+        const timer = setTimeout(() => {
+          setCards(prevCards => prevCards.map((card, index) => {
+            if (index === firstIndex || index === secondIndex) {
+              return { ...card, flipped: false };
+            }
+            return card;
+          }));
+          setSelectedCards([]); 
         }, 1000);
-      }
 
+        return () => clearTimeout(timer);
+      }
+      
       setSelectedCards([]);
     }
   }, [selectedCards, cards]);
 
   const handleCardPress = (index) => {
     if (selectedCards.length < 2 && !cards[index].flipped && !showCards) {
+
+      setCards((prevCards) => {
+        const newCards = [...prevCards];
+        newCards[index].flipped = true;
+        return newCards;
+      });
       setSelectedCards((prev) => [...prev, index]);
     }
   };
@@ -117,12 +126,17 @@ const LevelScreen = ({ route, navigation }) => {
     setSelectedCards([]);
     setShowCards(true);
 
-    setTimeout(() => {
+    const timer = setTimeout(() => {
+      setCards((prevCards) =>
+        prevCards.map((card) => ({ ...card, flipped: false }))
+      );
       setShowCards(false);
     }, 3000);
 
     await removeData(STORAGE_KEY);
     saveGameState();
+
+    return () => clearTimeout(timer);
   };
 
   const onBackPress = () => {
@@ -140,9 +154,9 @@ const LevelScreen = ({ route, navigation }) => {
 
   const renderCard = ({ item }) => (
     <Card
-      onPress={() => handleCardPress(item.id)}
-      flipped={item.flipped || selectedCards.includes(item.id) || showCards}
-      image={item.image}  
+      onPress={() => handleCardPress(parseInt(item.id))}
+      flipped={item.flipped || selectedCards.includes(parseInt(item.id)) || showCards}
+      image={item.image}
     />
   );
 
@@ -165,10 +179,10 @@ const LevelScreen = ({ route, navigation }) => {
               data={cards}
               renderItem={renderCard}
               keyExtractor={(item) => item.id}
-              numColumns={numColumns} 
+              numColumns={numColumns}
               contentContainerStyle={styles.cardContainer}
-              columnWrapperStyle={styles.columnWrapper} 
-              showsVerticalScrollIndicator={false} 
+              columnWrapperStyle={styles.columnWrapper}
+              showsVerticalScrollIndicator={false}
             />
           ) : (
             <Text>Loading...</Text>
@@ -197,7 +211,7 @@ const LevelScreen = ({ route, navigation }) => {
   );
 };
 
-const cardSize = Dimensions.get('window').width / 3 - 20; 
+const cardSize = Dimensions.get('window').width / 3 - 20;
 
 const styles = StyleSheet.create({
   background: {
@@ -216,12 +230,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   columnWrapper: {
-    justifyContent: 'space-between', 
-  },
-  card: {
-    width: cardSize,
-    height: cardSize,
-    margin: 10,
+    justifyContent: 'space-between',
   },
 });
 
