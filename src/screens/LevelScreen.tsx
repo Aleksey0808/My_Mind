@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ImageBackground, StyleSheet } from 'react-native';
+import { View, Text, ImageBackground, StyleSheet, FlatList, Dimensions } from 'react-native';
 import Card from '../components/Card';
-import ShowModal from '../components/ShowModal'; 
+import ShowModal from '../components/ShowModal';
 import { saveData, getData, removeData } from '../utils/storageUtils';
 import Header from '../components/Header';
 
@@ -12,7 +12,7 @@ const LevelScreen = ({ route, navigation }) => {
   const generateCards = (images) => {
     const pairs = [...images, ...images].sort(() => Math.random() - 0.5);
     return pairs.map((image, index) => ({
-      id: index,
+      id: index.toString(),
       image,
       flipped: false,
     }));
@@ -49,40 +49,35 @@ const LevelScreen = ({ route, navigation }) => {
       setIsLoaded(true);
     }
   };
-  
+
   useEffect(() => {
     loadGameState();
   }, []);
 
   useEffect(() => {
-    if (showCards) {
-      const timer = setTimeout(() => {
-        setCards((prevCards) =>
-          prevCards.map((card) => ({
-            ...card,
-            flipped: false,
-          }))
-        );
-        setShowCards(false);
-      }, 3000);
+    const timer = setTimeout(() => {
+      setCards((prevCards) =>
+        prevCards.map((card) => ({ ...card, flipped: false }))
+      );
+      setShowCards(false);
+    }, 3000);
 
-      return () => clearTimeout(timer);
-    }
-  }, [showCards]);
+    return () => clearTimeout(timer);
+  }, []); 
 
   useEffect(() => {
     if (selectedCards.length === 2) {
-      const [first, second] = selectedCards;
+      const [firstIndex, secondIndex] = selectedCards;
 
-      if (cards[first].image === cards[second].image) {
+      if (cards[firstIndex].image === cards[secondIndex].image) {
         setCards((prevCards) =>
           prevCards.map((card, index) =>
-            index === first || index === second ? { ...card, flipped: true } : card
+            index === firstIndex || index === secondIndex ? { ...card, flipped: true } : card
           )
         );
 
-        if (cards.every(card => card.flipped || card.id === first || card.id === second)) {
-          setGameWon(true); 
+        if (cards.every(card => card.flipped || card.id === firstIndex.toString() || card.id === secondIndex.toString())) {
+          setGameWon(true);
         }
       } else {
         setLives((prevLives) => {
@@ -93,17 +88,31 @@ const LevelScreen = ({ route, navigation }) => {
           return newLives;
         });
 
-        setTimeout(() => {
-          setSelectedCards([]);
+        const timer = setTimeout(() => {
+          setCards(prevCards => prevCards.map((card, index) => {
+            if (index === firstIndex || index === secondIndex) {
+              return { ...card, flipped: false };
+            }
+            return card;
+          }));
+          setSelectedCards([]); 
         }, 1000);
-      }
 
+        return () => clearTimeout(timer);
+      }
+      
       setSelectedCards([]);
     }
   }, [selectedCards, cards]);
 
   const handleCardPress = (index) => {
     if (selectedCards.length < 2 && !cards[index].flipped && !showCards) {
+
+      setCards((prevCards) => {
+        const newCards = [...prevCards];
+        newCards[index].flipped = true;
+        return newCards;
+      });
       setSelectedCards((prev) => [...prev, index]);
     }
   };
@@ -117,46 +126,64 @@ const LevelScreen = ({ route, navigation }) => {
     setSelectedCards([]);
     setShowCards(true);
 
-    setTimeout(() => {
+    const timer = setTimeout(() => {
+      setCards((prevCards) =>
+        prevCards.map((card) => ({ ...card, flipped: false }))
+      );
       setShowCards(false);
     }, 3000);
 
     await removeData(STORAGE_KEY);
     saveGameState();
+
+    return () => clearTimeout(timer);
   };
 
   const onBackPress = () => {
-    console.log('Back button pressed');
     navigation.goBack();
   };
 
-  const guessedCards = cards.filter(card => card.flipped).length / 2; 
-  const totalCards = cards.length / 2; 
+  const home = () => {
+    navigation.navigate('Home');
+  };
+
+  const guessedCards = cards.filter(card => card.flipped).length / 2;
+  const totalCards = cards.length / 2;
+
+  const numColumns = cards.length > 6 ? 3 : 2;
+
+  const renderCard = ({ item }) => (
+    <Card
+      onPress={() => handleCardPress(parseInt(item.id))}
+      flipped={item.flipped || selectedCards.includes(parseInt(item.id)) || showCards}
+      image={item.image}
+    />
+  );
+
   return (
     <>
       <Header
         showBackButton={true}
         showInfoButton={false}
         lives={lives}
-        totalCards={totalCards} 
-        guessedCards={guessedCards} 
+        totalCards={totalCards}
+        guessedCards={guessedCards}
         onBackPress={onBackPress}
-        showLogo={false} 
+        showLogo={false}
       />
 
       <ImageBackground source={backgroundImage} style={styles.background}>
         <View style={styles.container}>
           {isLoaded ? (
-            <View style={styles.cardContainer}>
-              {cards.map((card) => (
-                <Card
-                  key={card.id}
-                  onPress={() => handleCardPress(card.id)}
-                  flipped={card.flipped || selectedCards.includes(card.id) || showCards}
-                  image={card.image}
-                />
-              ))}
-            </View>
+            <FlatList
+              data={cards}
+              renderItem={renderCard}
+              keyExtractor={(item) => item.id}
+              numColumns={numColumns}
+              contentContainerStyle={styles.cardContainer}
+              columnWrapperStyle={styles.columnWrapper}
+              showsVerticalScrollIndicator={false}
+            />
           ) : (
             <Text>Loading...</Text>
           )}
@@ -167,6 +194,8 @@ const LevelScreen = ({ route, navigation }) => {
           message="Game over!"
           onClose={handleRestart}
           buttonText="Start again"
+          onBackPress={onBackPress}
+          home={home}
         />
 
         <ShowModal
@@ -174,14 +203,15 @@ const LevelScreen = ({ route, navigation }) => {
           message="Congratulations! You won!"
           onClose={handleRestart}
           buttonText="Start again"
+          onBackPress={onBackPress}
+          home={home}
         />
       </ImageBackground>
     </>
   );
 };
 
-export default LevelScreen;
-
+const cardSize = Dimensions.get('window').width / 3 - 20;
 
 const styles = StyleSheet.create({
   background: {
@@ -194,20 +224,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  title: {
-    fontSize: 24,
-    color: 'white',
-    marginBottom: 20,
-  },
-  lives: {
-    fontSize: 20,
-    color: 'white',
-    marginBottom: 10,
-  },
   cardContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
     justifyContent: 'center',
-    maxWidth: '80%', 
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  columnWrapper: {
+    justifyContent: 'space-between',
   },
 });
+
+export default LevelScreen;

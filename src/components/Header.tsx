@@ -20,7 +20,6 @@ const Header = ({
       style={styles.gradient}
     >
       <View style={styles.header}>
-        {/* Кнопка "Назад" */}
         {showBackButton && (
           <TouchableOpacity 
             onPress={onBackPress} 
@@ -31,31 +30,32 @@ const Header = ({
           </TouchableOpacity>
         )}
 
-        <View style={styles.centerContainer}>
-          {showLogo ? (
-            <View style={styles.logoContainer}>
-              <Image
-                source={require('../../assets/images/miniLogo.png')} 
-                style={styles.logo}
-              />
-            </View>
-          ) : (
-            <>
-              <View style={styles.livesContainer}>
-                <Image source={require('../../assets/images/heart.png')} style={styles.image} />
-                <Text style={styles.livesText}>{lives}</Text>
-              </View>
-              <View style={styles.guessedContainer}>
-                <Text style={styles.guessedText}>{guessedCards}/{totalCards}</Text>
-              </View>
-            </>
-          )}
-        </View>
+        {showLogo && (
+          <View style={styles.logoContainer}>
+            <Image
+              source={require('../../assets/images/miniLogo.png')} 
+              style={styles.logo}
+              resizeMode="contain"
+            />
+          </View>
+        )}
 
         {showInfoButton && (
           <TouchableOpacity onPress={onInfoPress} style={styles.infoButton}>
             <Image source={require('../../assets/images/info.png')} style={styles.image} />
           </TouchableOpacity>
+        )}
+
+        {!showLogo && (
+          <>
+            <View style={styles.livesContainer}>
+              <Image source={require('../../assets/images/heart.png')} style={styles.image} />
+              <Text style={styles.livesText}>{lives}</Text>
+            </View>
+            <View style={styles.guessedContainer}>
+              <Text style={styles.guessedText}>{guessedCards}/{totalCards}</Text>
+            </View>
+          </>
         )}
       </View>
     </LinearGradient>
@@ -68,44 +68,52 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 40,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    paddingBottom: 40,
+    height: 100, 
+    position: 'relative', 
+    marginTop: 20,
   },
   backButton: {
-    padding: 10,
-  },
-  centerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-  },
-  livesContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 10,
+    position: 'absolute',
+    left: 20, 
+    top: 40,  
+    zIndex: 1, 
   },
   logoContainer: {
+    position: 'absolute',
+    top: 30, 
+    left: '50%', 
+    transform: [{ translateX: -25 }], 
+  },
+  logo: {
+    width: 62,
+    height: 40,
+  },
+  infoButton: {
+    position: 'absolute',
+    right: 20, 
+    top: 40,  
+    zIndex: 1, 
+  },
+  livesContainer: {
+    position: 'absolute',
+    left: '45%', 
+    top: 40,  
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 10,
+  },
+  guessedContainer: {
+    position: 'absolute',
+    right: 20, 
+    top: 40,  
+    backgroundColor: '#43BCF0',
+    borderRadius: 25,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
   },
   livesText: {
     color: 'white',
     fontSize: 18,
     marginLeft: 5,
-  },
-  guessedContainer: {
-    backgroundColor: '#43BCF0',
-    borderRadius: 25,
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    marginHorizontal: 10,
   },
   guessedText: {
     color: 'white',
@@ -114,13 +122,6 @@ const styles = StyleSheet.create({
   image: {
     width: 30,
     height: 30,
-  },
-  logo: {
-    width: 50,
-    height: 50,
-  },
-  infoButton: {
-    padding: 10,
   },
 });
 

@@ -22,14 +22,8 @@ const SelectLevelScreen = ({ navigation }: { navigation: any }) => {
       {loadImages[item.levelNumber - 1] && ( 
         <Image source={loadImages[item.levelNumber - 1]} style={styles.buttonImage} />
       )}
-      <Text style={styles.buttonText}>Level {item.levelNumber}</Text>
     </TouchableOpacity>
   );
-
-  const onBackPress = () => {
-    console.log('Back button pressed');
-    navigation.goBack();
-  };
 
   const onInfoPress = () => {
     console.log('Info button pressed');
@@ -52,6 +46,7 @@ const SelectLevelScreen = ({ navigation }: { navigation: any }) => {
         renderItem={renderItem}
         keyExtractor={(item) => item.levelNumber.toString()} 
         numColumns={2} 
+        columnWrapperStyle={styles.row} 
       />
     </View>
     </ImageBackground>
@@ -66,6 +61,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    justifyContent: 'center', 
+    alignItems: 'center', 
   },
   background: {
     flex: 1,
@@ -73,21 +70,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    width: '45%', 
-    height: 120,
+    width: '40%', 
+    aspectRatio: 1,
+    // height: 120,
     justifyContent: 'center',
     alignItems: 'center',
     margin: 10,
     borderRadius: 10,
     backgroundColor: '#6EBCF7',
+    overflow: 'hidden',
   },
   buttonImage: {
-    width: 60,
-    height: 60,
+    width: '100%',
+    height: '100%',
     marginBottom: 5,
   },
   buttonText: {
     color: 'white',
     textAlign: 'center',
+  },
+  row: {
+    justifyContent: 'space-around', 
   },
 });
