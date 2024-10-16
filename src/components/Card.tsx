@@ -8,6 +8,7 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({ onPress, flipped, image }) => {
+  
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
       {flipped ? (

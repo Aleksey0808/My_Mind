@@ -152,14 +152,16 @@ const LevelScreen = ({ route, navigation }) => {
 
   const numColumns = cards.length > 6 ? 3 : 2;
 
-  const renderCard = ({ item }) => (
-    <Card
-      onPress={() => handleCardPress(parseInt(item.id))}
-      flipped={item.flipped || selectedCards.includes(parseInt(item.id)) || showCards}
-      image={item.image}
-    />
-  );
-
+  const renderCard = ({ item }) => {
+    return (
+      <Card
+        onPress={() => handleCardPress(parseInt(item.id))}
+        flipped={item.flipped || selectedCards.includes(parseInt(item.id)) || showCards}
+        image={item.image}
+      />
+    );
+  };
+  
   return (
     <>
       <Header
@@ -183,6 +185,7 @@ const LevelScreen = ({ route, navigation }) => {
               contentContainerStyle={styles.cardContainer}
               columnWrapperStyle={styles.columnWrapper}
               showsVerticalScrollIndicator={false}
+              extraData={selectedCards}
             />
           ) : (
             <Text>Loading...</Text>
