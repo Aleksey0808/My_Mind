@@ -10,8 +10,7 @@ const GeoCheckScreen = ({ navigation }: { navigation: any }) => {
         const { latitude, longitude } = await getUserGeo();
         const country = determineCountry(latitude, longitude);
 
-        // if (country === 'Ukraine') {
-          if (true) {
+        if (country === 'Ukraine') {
           navigation.navigate('Home'); 
         } else {
           const url = 'https://uk.wikipedia.org';
